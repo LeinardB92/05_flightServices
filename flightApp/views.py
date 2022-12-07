@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from flightApp.models import Flight,Passenger,Reservation
 from flightApp.serializers import FlightSerializer,PassengerSerializer,ReservationSerializer
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework import filters
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -16,6 +16,27 @@ def find_flights(request):
         )
     serializer = FlightSerializer(flights, many = True)
     return Response(serializer.data)
+
+@api_view(['POST'])
+def save_reservation(request):
+    flight = Flight.objects.get(id = request.data['flightId'])
+
+    passenger = Passenger()
+    passenger.firstName = request.data['firstName']
+    passenger.lastName = request.data['lastName']
+    passenger.middleName = request.data['middleName']
+    passenger.email = request.data['email']
+    passenger.phone = request.data['phone']
+    passenger.save()
+
+    reservation = Reservation()
+    reservation.flight = flight
+    reservation.passenger = passenger
+
+    #Cualquiera de las siguientes 2 maneras es correcta.
+    # Reservation.save(reservation)
+    reservation.save()
+    return Response(status=status.HTTP_201_CREATED)
 
 class FlightViewSet(viewsets.ModelViewSet):
     queryset=Flight.objects.all()
