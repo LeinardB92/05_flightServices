@@ -5,6 +5,7 @@ from rest_framework import viewsets, status
 from rest_framework import filters
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 @api_view(['POST'])
@@ -43,6 +44,7 @@ class FlightViewSet(viewsets.ModelViewSet):
     serializer_class=FlightSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['departureCity', 'arrivalCity','dateOfDeparture']
+    permission_classes = (IsAuthenticated,)
 
 class PassengerViewSet(viewsets.ModelViewSet):
     queryset=Passenger.objects.all()
