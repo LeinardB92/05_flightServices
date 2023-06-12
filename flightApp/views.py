@@ -37,7 +37,9 @@ def save_reservation(request):
     #Cualquiera de las siguientes 2 maneras es correcta.
     # Reservation.save(reservation)
     reservation.save()
-    return Response(status=status.HTTP_201_CREATED)
+    serializer = ReservationSerializer(reservation)
+    # return Response(status=status.HTTP_201_CREATED)
+    return Response(serializer.data)
 
 class FlightViewSet(viewsets.ModelViewSet):
     queryset=Flight.objects.all()
